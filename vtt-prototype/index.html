@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <title>Wings of Atreia VTT — Prototype</title>
+  <link rel="stylesheet" href="style.css?v=20261108-footer-flex-layout-1">
+</head>
+<body>
+  <div id="object-context-menu" class="object-context-menu" role="menu" hidden>
+    <div class="bulk-visibility-panel" data-bulk-visibility-panel hidden>
+      <div class="context-menu-heading">OBJECT VISIBILITY · SELECTED OBJECTS</div>
+      <button type="button" data-bulk-visibility="players" role="menuitem">Visible to Players</button>
+      <button type="button" data-bulk-visibility="gm" role="menuitem">GM Only</button>
+      <div class="context-menu-divider"></div>
+    </div>
+    <div class="context-submenu">
+      <button type="button" class="context-submenu-trigger" data-submenu-trigger="identity">Token Name &amp; Border Color <span>›</span></button>
+      <div class="context-submenu-panel" data-submenu-panel="identity">
+        <div class="context-menu-heading">TOKEN NAME &amp; BORDER</div>
+        <label class="context-menu-label">Token name<input type="text" data-token-name maxlength="120" placeholder="Enter token name"></label>
+        <button type="button" data-token-name-apply>Apply Name</button>
+        <label class="context-menu-label">Border color<input type="color" data-token-border-color value="#0b1320" aria-label="Token border color"></label>
+      </div>
+    </div>
+    <div class="context-submenu">
+      <button type="button" class="context-submenu-trigger" data-submenu-trigger="quick">Token Quick Controls <span>›</span></button>
+      <div class="context-submenu-panel" data-submenu-panel="quick">
+        <div class="token-context-tools" data-token-tools>
+          <div class="context-menu-heading">TOKEN QUICK CONTROLS</div>
+          <button type="button" data-token-action="transfer-scene">Transfer to Scene…</button>
+          <div class="context-menu-heading">CHARACTER CLASS</div>
+          <label class="context-menu-label">Class
+            <select data-token-class aria-label="Character class"><option value="">No class assigned</option><option>Gladiator</option><option>Templar</option><option>Assassin</option><option>Ranger</option><option>Sorcerer</option><option>Spiritmaster</option><option>Cleric</option><option>Chanter</option><option>Aethertech</option><option>Gunslinger</option><option>Songweaver</option></select>
+          </label>
+          <div class="context-menu-heading">TOKEN ACCESS</div>
+          <label class="context-menu-label">Who can access this token?
+            <select data-token-assignment aria-label="Token access"><option value="gm">GM Only</option><option value="all">All Players</option><option value="unassigned">Unassigned</option><option value="specific">Specific Player(s)</option></select>
+          </label>
+          <label class="context-menu-label" data-token-players-wrap hidden>Player name(s), comma-separated
+            <input type="text" data-token-players placeholder="e.g. Player 1, Player 2" maxlength="1000" aria-label="Specific player names">
+          </label>
+          <div class="context-menu-row"><span>Altitude</span><strong data-token-altitude>— ft</strong></div>
+          <label class="context-menu-label">Height above terrain
+            <input type="range" min="0" max="120" step="5" value="0" data-token-altitude-slider aria-label="Token altitude in 5-foot increments">
+          </label>
+          <label class="context-menu-label">Size
+            <select data-token-size aria-label="Token size"><option value="1">1×1 · 5 ft</option><option value="2">2×2 · 10 ft</option><option value="3">3×3 · 15 ft</option><option value="4">4×4 · 20 ft</option><option value="5">5×5 · 25 ft</option><option value="6">6×6 · 30 ft</option><option value="7">7×7 · 35 ft</option><option value="8">8×8 · 40 ft</option></select>
+          </label>
+          <button type="button" data-token-action="swap-image">Swap Image…</button>
+          <div class="context-menu-heading">SAVED IMAGES</div>
+          <div class="context-menu-actions"><button type="button" data-token-slot="0">Use Image 1</button><button type="button" data-token-slot="1">Use Image 2</button><button type="button" data-token-slot="2">Use Image 3</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="context-submenu" data-token-resource-submenu hidden>
+      <button type="button" class="context-submenu-trigger" data-submenu-trigger="class-resource">Class Resources <span>›</span></button>
+      <div class="context-submenu-panel" data-submenu-panel="class-resource">
+        <div class="context-menu-heading">CLASS RESOURCES</div>
+        <div class="class-resource-fields" data-token-resource-fields>No class assigned.</div>
+      </div>
+    </div>
+    <div class="context-submenu">
+      <button type="button" class="context-submenu-trigger" data-submenu-trigger="conditions">Conditions <span>›</span></button>
+      <div class="context-submenu-panel" data-submenu-panel="conditions">
+        <div class="context-menu-heading">CONDITIONS</div>
+        <label class="context-menu-label">Apply condition
+          <select data-token-condition-select aria-label="Condition to apply"><option value="">Choose condition…</option><option>Blinded</option><option>Charmed</option><option>Deafened</option><option>Frightened</option><option>Grappled</option><option>Incapacitated</option><option>Invisible</option><option>Paralyzed</option><option>Petrified</option><option>Poisoned</option><option>Prone</option><option>Restrained</option><option>Stunned</option><option>Unconscious</option></select>
+        </label>
+        <label class="context-menu-label">Duration
+          <select data-token-condition-duration><option value="until-removed">Until Removed</option><option value="turn">Turns</option><option value="round">Rounds</option></select>
+        </label>
+        <label class="context-menu-label" data-token-condition-count-wrap hidden>Duration count<input type="number" min="1" max="99" step="1" value="1" data-token-condition-count></label>
+        <button type="button" data-token-condition-apply disabled>Apply Condition</button>
+        <div class="context-condition-list" data-token-condition-list><small>No active Conditions.</small></div>
+      </div>
+    </div>
+    <div class="context-submenu">
+      <button type="button" class="context-submenu-trigger" data-submenu-trigger="status">Status <span>›</span></button>
+      <div class="context-submenu-panel" data-submenu-panel="status">
+        <div class="context-menu-heading">PLAYER SCREEN INFORMATION</div>
+        <label class="context-menu-label"><span><input type="checkbox" data-player-info="name" checked> Show token name</span></label>
+        <label class="context-menu-label"><span><input type="checkbox" data-player-info="hp"> Show HP / Temp HP</span></label>
+        <label class="context-menu-label"><span><input type="checkbox" data-player-info="ac"> Show Armor Class</span></label>
+        <label class="context-menu-label"><span><input type="checkbox" data-player-info="conditions"> Show Conditions</span></label>
+        <label class="context-menu-label"><span><input type="checkbox" data-player-info="classResource"> Show Class Resources</span></label>
+        <label class="context-menu-label"><span><input type="checkbox" data-player-info="altitude"> Show Altitude</span></label>
+        <div class="context-menu-heading">TOKEN STATUS · GM EDITING</div>
+        <label class="context-menu-label">HP (current)<input type="number" min="0" max="9999" step="1" data-token-hp-current></label>
+        <label class="context-menu-label">HP (maximum)<input type="number" min="0" max="9999" step="1" data-token-hp-maximum></label>
+        <label class="context-menu-label">Temporary HP<input type="number" min="0" max="9999" step="1" data-token-temp-hp></label>
+        <label class="context-menu-label">Armor Class (AC)<input type="number" min="0" max="999" step="1" data-token-ac></label>
+        <label class="context-menu-label">Life Status<select data-token-life-status><option>Alive</option><option>Unconscious</option><option>Dead</option></select></label>
+        <small class="context-status-note">The GM edits these values. Players can view them only on tokens assigned to them; unassigned-token values remain GM-only.</small>
+      </div>
+    </div>
+    <div class="context-menu-divider"></div>
+    <button type="button" data-object-action="rename" role="menuitem">Rename</button>
+    <button type="button" data-object-action="attach" role="menuitem">Attach to…</button>
+    <button type="button" data-object-action="detach" role="menuitem">Detach from…</button>
+  </div>
+  <section id="player-join-gate" class="player-join-gate" aria-labelledby="player-join-title">
+    <div class="player-join-card">
+      <div class="eyebrow">WINGS OF ATREIA · MULTIPLAYER</div>
+      <h1 id="player-join-title">Join Game Session</h1>
+      <p>Enter the Character Name you will use in this session, then send a request to the Game Master.</p>
+      <label for="multiplayer-display-name">Character Name</label>
+      <input id="multiplayer-display-name" type="text" maxlength="40" autocomplete="name" placeholder="Enter your Character Name">
+      <button type="button" id="multiplayer-request-join">Submit Join Request</button>
+      <p id="multiplayer-player-state" class="player-join-status" role="status" aria-live="polite">Waiting to submit your request.</p>
+    </div>
+  </section>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">TECHNICAL PROTOTYPE</div>
+      <h1>WINGS OF ATREIA VTT</h1>
+    </div>
+    <div class="status"><span class="dot"></span> Local prototype · 5-ft altitude test</div>
+  </header>
+
+  <main class="layout">
+    <section class="stage-card">
+      <canvas id="scene" aria-label="Lightweight 3D tabletop prototype"></canvas>
+      <div class="hud top-left session-display">
+        <strong>SESSION</strong>
+        <span>Prototype Battle · ROOM ATREIA-4827</span>
+      </div>
+      <div class="camera-pad" aria-label="Camera controls">
+        <div class="camera-label">CAMERA</div>
+        <label class="player-camera-sync-control"><input type="checkbox" id="player-camera-sync" checked> Sync camera with Player Screen</label>
+        <button type="button" id="open-player-screen" class="player-screen-open">Open Player Screen</button>
+         <button type="button" data-action="gm-ping-toggle" class="wide" aria-pressed="false" title="Click, then choose a battlefield location to direct players’ attention">Ping Location</button>
+                <button data-action="pitch-up" aria-label="Look up">▲</button>
+        <div>
+          <button data-action="yaw-left" aria-label="Rotate left">◀</button>
+          <button data-action="2d" aria-label="Toggle 2D / 3D view" title="Toggle 2D / 3D view">2D / 3D</button>
+          <button data-action="yaw-right" aria-label="Rotate right">▶</button>
+        </div>
+        <div class="turn-control-row" aria-label="Combat turn controls">
+          <button data-action="end-turn" class="turn-control" aria-label="End Turn">End Turn</button>
+          <button data-action="pitch-down" aria-label="Look down">▼</button>
+          <button data-action="end-round" class="turn-control" aria-label="End Round">End Round</button>
+        </div>
+        <div class="turn-counter-row"><div class="turn-counter" id="turn-counter">Round 1 · Turn 0</div><button data-action="reset-combat-clock" class="turn-reset" aria-label="Reset combat counter" title="Reset Round and Turn counters">Reset</button></div>
+      </div>
+      <div class="hud bottom-left" id="selection">Select a standee</div>
+      <div id="player-token-info" class="player-token-info" hidden aria-live="polite"></div>
+      <div class="hud movement-readout" id="movement-readout">Horizontal movement: — · Adjust altitude separately</div>
+      <div class="altitude" id="altitude">Altitude: —</div>
+      <div id="gm-note-hover" class="gm-note-hover" hidden></div>
+      <div id="gm-note-popup" class="gm-note-popup" hidden>
+        <div class="gm-note-popup-heading"><strong>GM Map Note</strong><button type="button" id="gm-note-close" aria-label="Collapse note">×</button></div>
+        <textarea id="gm-note-text" rows="6" maxlength="5000" placeholder="Write a private preparation note..."></textarea>
+        <div class="gm-note-popup-actions"><button type="button" id="gm-note-save">Save Note</button><button type="button" id="gm-note-clear">Clear Text</button><button type="button" id="gm-note-delete" class="danger">Delete Pin</button></div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <section class="multiplayer-panel" id="multiplayer-panel">
+<div class="eyebrow">REMOTE MULTIPLAYER</div><p class="note" id="multiplayer-status" role="status">Multiplayer is inactive. The local VTT works normally.</p>
+<div id="multiplayer-host"><button type="button" id="multiplayer-start-host">Start Multiplayer Session</button>
+<label for="multiplayer-invite">Player invitation link</label><input id="multiplayer-invite" type="text" readonly placeholder="Start a session to generate an invitation">
+<button type="button" id="multiplayer-copy-invite">Copy Invitation Link</button><div id="multiplayer-join-queue" class="multiplayer-join-queue">No pending join requests.</div><div class="eyebrow" style="margin-top:12px">MOVEMENT REQUESTS</div><div id="multiplayer-movement-queue" class="multiplayer-join-queue">No pending movement requests.</div><button type="button" id="multiplayer-end-session" hidden>End Multiplayer Session</button></div>
+<div id="multiplayer-join" hidden></div></section>
+<section>
+        <div class="eyebrow">LOCAL PLAYER / GM PREVIEW</div>
+        <label class="identity-label">View as
+          <select id="session-role">
+            <option value="gm">Game Master</option>
+            <option value="player">Player</option>
+          </select>
+        </label>
+        <label class="identity-label" id="player-name-wrap" hidden>Player name
+          <input id="session-player-name" type="text" value="Clark" placeholder="Enter player name">
+        </label>
+        <p class="note" id="permission-status">GM view: all tokens and controls available.</p>
+      </section>
+
+
+      <section>
+        <div class="eyebrow">LOCAL PLAYER / GM PREVIEW</div>
+        <label class="identity-label">View as
+          <select id="session-role">
+            <option value="gm">Game Master</option>
+            <option value="player">Player</option>
+          </select>
+        </label>
+        <label class="identity-label" id="player-name-wrap" hidden>Player name
+          <input id="session-player-name" type="text" value="Clark" placeholder="Enter player name">
+        </label>
+        <p class="note" id="permission-status">GM view: all tokens and controls available.</p>
+      </section>
+
+      <section>
+        <div class="eyebrow">TABLETOP</div>
+        <div class="control-grid">
+          <button data-action="2d">2D Fallback</button>
+          <button data-action="up">Raise +5 ft</button>
+          <button data-action="down">Lower −5 ft</button>
+        </div>
+        <div class="altitude-control">
+          <div class="altitude-control-heading"><label for="token-altitude-slider">Height above terrain</label><strong id="altitude-value">— ft</strong></div>
+          <input id="token-altitude-slider" type="range" min="0" max="120" step="5" value="0" aria-label="Token height above terrain in 5-foot increments">
+          <div class="altitude-scale"><span>On terrain · 0 ft</span><span>120 ft</span></div>
+          <p class="note" id="altitude-detail">Select a token to adjust its altitude.</p>
+          <div class="altitude-reference"><span>30-ft reference levels</span><strong>0 · 30 · 60 · 90 · 120 ft</strong></div>
+        </div>
+        <p class="note">The slider changes only the selected token’s height. Altitude is measured in 5-ft increments; 30-ft values are reference levels, not automatic movement limits.</p>
+      </section>
+
+
+      <section>
+        <div class="eyebrow">CONDITIONS</div>
+        <div class="token-editor condition-panel" id="condition-panel" aria-live="polite">
+          <strong id="condition-token-name">No token selected</strong>
+          <div id="condition-list" class="condition-list">Select a token to view its active Conditions.</div>
+          <div id="condition-controls" class="condition-controls" hidden>
+            <label for="condition-duration-type">Duration
+              <select id="condition-duration-type">
+                <option value="until-removed">Until Removed</option>
+                <option value="turn">Turns</option>
+                <option value="round">Rounds</option>
+              </select>
+            </label>
+            <label for="condition-duration-value" id="condition-duration-value-wrap" hidden>Duration count
+              <input id="condition-duration-value" type="number" min="1" max="99" step="1" value="1">
+            </label>
+            <label for="condition-select">Add Condition
+              <select id="condition-select">
+                <option value="">Choose a Condition</option>
+                <option>Blinded</option><option>Charmed</option><option>Deafened</option>
+                <option>Frightened</option><option>Grappled</option><option>Incapacitated</option>
+                <option>Invisible</option><option>Paralyzed</option><option>Petrified</option>
+                <option>Poisoned</option><option>Prone</option><option>Restrained</option>
+                <option>Stunned</option><option>Unconscious</option>
+              </select>
+            </label>
+            <button type="button" data-condition-apply>Apply Condition</button>
+          </div>
+          <div id="condition-remove-list" class="condition-remove-list"></div>
+        </div>
+      </section>
+      <section>
+        <div class="eyebrow">CLASS RESOURCE</div>
+        <div class="token-editor class-resource-panel" aria-live="polite">
+          <strong id="class-resource-token-name">No token selected</strong>
+          <div id="class-resource-fields" class="class-resource-fields">Select a token to view its class resource.</div>
+        </div>
+      </section>
+      <section>
+        <div class="eyebrow">GRID DISPLAY · GM</div>
+        <div class="token-editor">
+          <label>Gridline color<input id="grid-color" type="color" value="#8fd3ff"></label>
+          <label>Gridline opacity <span id="grid-opacity-value">30%</span><input id="grid-opacity" type="range" min="0" max="100" step="1" value="30"></label>
+          <p class="note">Controls the color and opacity of the gridlines and outer grid boundary. Changes are saved with the scene and shared with the Player Screen.</p>
+        </div>
+      </section>
+      <section>
+        <div class="eyebrow">TERRAIN EDITOR · GM</div>
+        <div class="token-editor terrain-editor">
+          <label>Terrain type
+            <select id="terrain-type">
+              <option value="hill">Hill</option><option value="mountain">Mountain</option>
+              <option value="cliff">Cliff</option><option value="canopy">Treetop / Canopy</option>
+              <option value="platform">Platform / Rooftop</option><option value="ramp">Ramp / Slope</option><option value="ground">Raised Ground</option>
+              <option value="erase">Erase Terrain</option>
+            </select>
+          </label>
+          <label>Ramp lower edge elevation<select id="terrain-start-height"><option value="0">0 ft (ground)</option><option value="5" selected>5 ft</option><option value="10">10 ft</option><option value="15">15 ft</option><option value="20">20 ft</option><option value="25">25 ft</option><option value="30">30 ft</option><option value="40">40 ft</option><option value="50">50 ft</option><option value="60">60 ft</option><option value="80">80 ft</option><option value="100">100 ft</option></select></label>
+          <label>Surface elevation
+            <select id="terrain-height">
+              <option value="5">5 ft</option><option value="10">10 ft</option><option value="15">15 ft</option>
+              <option value="20" selected>20 ft</option><option value="25">25 ft</option><option value="30">30 ft</option>
+              <option value="40">40 ft</option><option value="50">50 ft</option><option value="60">60 ft</option>
+              <option value="80">80 ft</option><option value="100">100 ft</option><option value="120">120 ft</option>
+            </select>
+          </label>
+          <label>Ramp direction (high edge)<select id="terrain-direction"><option value="north">North edge high</option><option value="south">South edge high</option><option value="east">East edge high</option><option value="west">West edge high</option></select></label>
+          <button data-action="terrain-ramp" class="wide">Ramp Paint Mode</button>
+          <button data-action="terrain-toggle">Paint Terrain: Off</button>
+          <p class="note" id="terrain-status">Choose terrain and elevation, enable painting, then click grid squares. GM only.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="eyebrow">WALL EDITOR · GM</div>
+        <div class="token-editor">
+          <label>Wall name<input id="wall-name" type="text" maxlength="80" value="Wall"></label>
+          <div class="editor-row">
+            <label>Placement<select id="wall-placement-mode"><option value="grid" selected>Grid snapped</option><option value="free">Free placement</option></select></label>
+            <label>Grid snap point<select id="wall-snap-mode"><option value="center" selected>Grid center</option><option value="corner">Grid corner / intersection</option><option value="line">Gridline midpoint (X)</option></select></label>
+          </div>
+          <div class="editor-row">
+            <label>Wall color<input id="wall-color" type="color" value="#788695"></label>
+            <label>Altitude above terrain<select id="wall-altitude"><option value="0">0 ft</option><option value="5">5 ft</option><option value="10">10 ft</option><option value="15">15 ft</option><option value="20">20 ft</option><option value="25">25 ft</option><option value="30">30 ft</option><option value="40">40 ft</option><option value="60">60 ft</option><option value="80">80 ft</option><option value="100">100 ft</option><option value="120">120 ft</option></select></label>
+            <label>Height<select id="wall-height"><option value="5">5 ft</option><option value="10" selected>10 ft</option><option value="15">15 ft</option><option value="20">20 ft</option><option value="25">25 ft</option><option value="30">30 ft</option><option value="40">40 ft</option><option value="60">60 ft</option><option value="80">80 ft</option><option value="100">100 ft</option><option value="120">120 ft</option></select></label>
+            <label>Thickness<select id="wall-thickness"><option value="1" selected>1 ft</option><option value="2">2 ft</option><option value="3">3 ft</option><option value="5">5 ft</option><option value="10">10 ft</option><option value="15">15 ft</option><option value="20">20 ft</option><option value="25">25 ft</option><option value="30">30 ft</option></select></label>
+          </div>
+          <div class="editor-row"><button data-action="wall-placement" class="wide">Place Wall</button></div>
+          <div class="editor-row"><button data-action="wall-update" disabled>Update Wall</button><button data-action="wall-lock" disabled>Lock Wall</button><button data-action="wall-delete" disabled>Delete Wall</button></div>
+          <p class="note" id="wall-status">Choose wall properties, click Place Wall, then drag on the battlefield. Select a wall to edit it. GM only.</p>
+        </div>
+      </section>
+
+      
+
+      <section>
+        <div class="eyebrow">BATTLEFIELD MAP · GM</div>
+        <div class="token-editor">
+          <label>Map image (PNG, WebP, or JPG)<input id="map-image-file" type="file" accept="image/png,image/webp,image/jpeg,.png,.webp,.jpg,.jpeg"></label>
+          <div class="editor-row"><label>Map width (squares)<input id="map-width" type="number" min="1" max="500" value="24"></label><label>Map height (squares)<input id="map-height" type="number" min="1" max="500" value="24"></label></div>
+          <div class="editor-row"><label>Horizontal offset (squares)<input id="map-x" type="number" min="-200" max="200" step="0.1" value="0"></label><label>Vertical offset (squares)<input id="map-y" type="number" min="-200" max="200" step="0.1" value="0"></label></div>
+          <p class="note">Offsets reposition the map image relative to the grid. Positive horizontal moves it right; positive vertical moves it toward the top of the map.</p>
+          <label>Map opacity <input id="map-opacity" type="range" min="5" max="100" value="78"></label>
+          <div class="editor-row"><button type="button" data-action="map-lock-toggle" aria-pressed="true">Unlock Map</button></div>
+          <div class="editor-row"><button data-action="map-apply">Apply Map Settings</button><button data-action="map-clear">Remove Map Image</button></div>
+          <p id="map-status" class="note">Upload a top-down battlefield map. It will sit beneath the grid, terrain, props, and tokens. Set its width and height in 5-foot grid squares.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="eyebrow">PROPS & ASSETS · GM</div>
+        <div class="token-editor asset-editor">
+          <label>Asset name<input id="asset-name" type="text" value="Prop" maxlength="120" placeholder="Crate, tree, statue..."></label>
+          <label class="token-image-label">Asset image (PNG, WebP, or JPG)
+            <input id="asset-image-file" type="file" accept="image/png,image/webp,image/jpeg,.png,.webp,.jpg,.jpeg" aria-label="Upload prop or asset image">
+          </label>
+          <label class="token-image-label">Swap image for selected prop or asset (PNG, WebP, or JPG)
+            <input id="asset-swap-image-file" type="file" accept="image/png,image/webp,image/jpeg,.png,.webp,.jpg,.jpeg" aria-label="Swap selected prop or asset image">
+          </label>
+          <div class="editor-row token-image-actions"><button type="button" data-action="asset-image-reset" disabled>Reset Framing</button></div>
+          <div class="eyebrow">SAVED PROP / ASSET IMAGES · UP TO 3</div>
+          <div class="editor-row token-image-actions">
+            <button type="button" data-image-slot-action="asset-save" data-image-slot="0">Save Current → 1</button>
+            <button type="button" data-image-slot-action="asset-use" data-image-slot="0">Use 1</button>
+          </div>
+          <div class="editor-row token-image-actions">
+            <button type="button" data-image-slot-action="asset-save" data-image-slot="1">Save Current → 2</button>
+            <button type="button" data-image-slot-action="asset-use" data-image-slot="1">Use 2</button>
+          </div>
+          <div class="editor-row token-image-actions">
+            <button type="button" data-image-slot-action="asset-save" data-image-slot="2">Save Current → 3</button>
+            <button type="button" data-image-slot-action="asset-use" data-image-slot="2">Use 3</button>
+          </div>
+          <div class="image-framing-controls" data-image-framing="asset">
+            <div class="image-framing-row image-zoom-row"><label for="asset-image-zoom">Zoom <strong data-image-value="zoom">1.00×</strong></label><input id="asset-image-zoom" type="range" min="1" max="10" step="0.05" value="1" data-image-zoom-object="asset" disabled></div>
+            <div class="image-framing-row"><span>Horizontal <strong data-image-value="x">0.00</strong></span><div class="image-arrow-pair"><button type="button" data-image-adjust-object="asset" data-image-adjust-axis="x" data-image-adjust-delta="-0.02" aria-label="Move image left" title="Move left" disabled>←</button><button type="button" data-image-adjust-object="asset" data-image-adjust-axis="x" data-image-adjust-delta="0.02" aria-label="Move image right" title="Move right" disabled>→</button></div></div>
+            <div class="image-framing-row"><span>Vertical <strong data-image-value="y">0.00</strong></span><div class="image-arrow-pair"><button type="button" data-image-adjust-object="asset" data-image-adjust-axis="y" data-image-adjust-delta="-0.02" aria-label="Move image up" title="Move up" disabled>↑</button><button type="button" data-image-adjust-object="asset" data-image-adjust-axis="y" data-image-adjust-delta="0.02" aria-label="Move image down" title="Move down" disabled>↓</button></div></div>
+          </div>
+          <div class="editor-row"><label>Display style<select id="asset-display-style"><option value="standee" selected>Standee · upright</option><option value="flat">Flat 2D · ground overlay</option></select></label><label>Image sizing<select id="asset-size-mode"><option value="grid" selected>Follow grid footprint</option><option value="pixel">Fixed pixel size</option></select></label><label>Image width (px)<input id="asset-image-width-px" type="number" min="16" max="1200" step="8" value="180"></label><label>Image height (px)<input id="asset-image-height-px" type="number" min="16" max="1200" step="8" value="180"></label><label>Height (px)<input id="asset-height-px" type="number" min="16" max="2000" step="8" value="240"></label></div>
+          <div class="editor-row"><label>Visibility<select id="asset-visibility"><option value="players" selected>Visible to Players</option><option value="gm">GM Only</option></select></label></div>
+          <p class="note">Width and Depth set the ground footprint. Height (px) sets the artwork height independently and scales with map zoom. Existing assets retain their previous height until you change this value.</p>
+          <div class="editor-row"><label>Width (squares)<select id="asset-width"><option value="1">1 square</option><option value="2" selected>2 squares</option><option value="3">3 squares</option><option value="4">4 squares</option><option value="6">6 squares</option><option value="8">8 squares</option><option value="12">12 squares</option></select></label><label>Depth (squares)<select id="asset-depth"><option value="1">1 square</option><option value="2" selected>2 squares</option><option value="3">3 squares</option><option value="4">4 squares</option><option value="6">6 squares</option><option value="8">8 squares</option><option value="12">12 squares</option></select></label></div>
+          <div class="editor-row"><label>Rotation<select id="asset-rotation"><option value="0">0°</option><option value="45">45°</option><option value="90">90°</option><option value="135">135°</option><option value="180">180°</option><option value="225">225°</option><option value="270">270°</option><option value="315">315°</option></select></label><label>Height above terrain<select id="asset-altitude"><option value="0">0 ft</option><option value="5">5 ft</option><option value="10">10 ft</option><option value="15">15 ft</option><option value="20">20 ft</option><option value="30">30 ft</option><option value="40">40 ft</option><option value="60">60 ft</option><option value="90">90 ft</option><option value="120">120 ft</option></select></label></div>
+          <div class="editor-row"><button data-action="asset-add">Add Asset</button><button data-action="asset-update">Update Asset</button><button data-action="asset-lock" class="wide" hidden disabled>Lock Asset</button><button data-action="asset-delete">Delete Selected</button></div>
+          <p id="asset-status" class="token-image-status">Upload a prop or environmental asset image, add it, then drag it across the grid to position it. Assets are separate from tokens.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="eyebrow">STANDEES</div>
+        <div id="tokens" class="token-list"></div>
+      </section>
+
+      <section>
+        <div class="eyebrow">TOKEN MANAGEMENT</div>
+        <div class="token-editor">
+          <input id="token-name" type="text" placeholder="Token name">
+          <div class="editor-row">
+            <input id="token-glyph" type="text" maxlength="2" placeholder="Glyph fallback">
+            <input id="token-color" type="color" value="#65d6a1" aria-label="Token color">
+          </div>
+          <label class="token-image-label">Swap image for selected token (PNG, WebP, or JPG)
+            <input id="token-image-file" type="file" accept="image/png,image/webp,image/jpeg,.png,.webp,.jpg,.jpeg" aria-label="Swap selected token image">
+          </label>
+          <div class="editor-row token-image-actions">
+            <button type="button" data-action="token-image-remove">Remove Image</button>
+            <button type="button" data-action="token-image-reset">Reset Framing</button>
+          </div>
+          <div class="eyebrow">SAVED TOKEN IMAGES · UP TO 3</div>
+          <div class="editor-row token-image-actions">
+            <button type="button" data-image-slot-action="token-save" data-image-slot="0">Save Current → 1</button>
+            <button type="button" data-image-slot-action="token-use" data-image-slot="0">Use 1</button>
+          </div>
+          <div class="editor-row token-image-actions">
+            <button type="button" data-image-slot-action="token-save" data-image-slot="1">Save Current → 2</button>
+            <button type="button" data-image-slot-action="token-use" data-image-slot="1">Use 2</button>
+          </div>
+          <div class="editor-row token-image-actions">
+            <button type="button" data-image-slot-action="token-save" data-image-slot="2">Save Current → 3</button>
+            <button type="button" data-image-slot-action="token-use" data-image-slot="2">Use 3</button>
+          </div>
+          <div class="image-framing-controls" data-image-framing="token">
+            <div class="image-framing-row image-zoom-row"><label for="token-image-zoom">Zoom <strong data-image-value="zoom">1.00×</strong></label><input id="token-image-zoom" type="range" min="1" max="10" step="0.05" value="1" data-image-zoom-object="token" disabled></div>
+            <div class="image-framing-row"><span>Horizontal <strong data-image-value="x">0.00</strong></span><div class="image-arrow-pair"><button type="button" data-image-adjust-object="token" data-image-adjust-axis="x" data-image-adjust-delta="-0.02" aria-label="Move image left" title="Move left" disabled>←</button><button type="button" data-image-adjust-object="token" data-image-adjust-axis="x" data-image-adjust-delta="0.02" aria-label="Move image right" title="Move right" disabled>→</button></div></div>
+            <div class="image-framing-row"><span>Vertical <strong data-image-value="y">0.00</strong></span><div class="image-arrow-pair"><button type="button" data-image-adjust-object="token" data-image-adjust-axis="y" data-image-adjust-delta="-0.02" aria-label="Move image up" title="Move up" disabled>↑</button><button type="button" data-image-adjust-object="token" data-image-adjust-axis="y" data-image-adjust-delta="0.02" aria-label="Move image down" title="Move down" disabled>↓</button></div></div>
+          </div>
+          <p id="token-image-status" class="token-image-status">No custom image; using the token glyph. Use the arrow controls to adjust zoom and image position.</p>
+          <div class="editor-row">
+            <label>Size
+              <select id="token-footprint">
+                <option value="1">1×1 · 5 ft</option>
+                <option value="2">2×2 · 10 ft</option>
+                <option value="3">3×3 · 15 ft</option>
+                <option value="4">4×4 · 20 ft</option>
+                <option value="5">5×5 · 25 ft</option>
+                <option value="6">6×6 · 30 ft</option>
+                <option value="7">7×7 · 35 ft</option>
+                <option value="8">8×8 · 40 ft</option>
+              </select>
+            </label>
+            <label>Height (px)<input id="token-height-px" type="number" min="16" max="2000" step="8" value="40"></label>
+            <label>Class
+              <select id="token-class"><option value="">No Class Assigned</option><option>Gladiator</option><option>Templar</option><option>Assassin</option><option>Ranger</option><option>Sorcerer</option><option>Spiritmaster</option><option>Cleric</option><option>Chanter</option><option>Aethertech</option><option>Gunslinger</option><option>Songweaver</option></select>
+          </label>
+          <label>Access
+              <select id="token-assignment">
+                <option value="all">All Players</option>
+                <option value="unassigned">Unassigned</option>
+                <option value="gm">GM Only</option>
+                <option value="specific">Specific Player(s)</option>
+              </select>
+            </label>
+          </div>
+          <input id="token-players" type="text" placeholder="Player name(s), comma separated" hidden>
+          <div class="editor-row">
+            <button data-action="token-add">Add Token</button>
+            <button data-action="token-update">Update</button>
+            <button data-action="token-delete">Delete</button>
+            <button data-action="token-lock" class="wide">Lock Token</button>
+          </div>
+        </div>
+      </section>
+
+
+      <section>
+        <div class="eyebrow">ASSET LIBRARY · GM</div>
+        <div id="asset-library-panel" class="asset-library-tools">
+          <p class="note">Save reusable token and prop templates to the shared online library. The same library is available to the GM across devices.</p>
+          <div class="asset-library-cloud">
+            <label>Cloudflare Worker URL
+              <input id="asset-library-api-url" type="url" placeholder="https://your-worker.your-subdomain.workers.dev" autocomplete="url">
+            </label>
+            <label>GM Asset Library access key
+              <input id="asset-library-access-key" type="password" placeholder="Enter your Cloudflare secret" autocomplete="current-password">
+            </label>
+            <div class="asset-library-cloud-actions">
+              <button type="button" id="asset-library-connect">Connect Cloud Library</button>
+              <button type="button" id="asset-library-refresh" hidden>Refresh</button>
+              <button type="button" id="asset-library-logout" class="danger" hidden>Disconnect</button>
+              <button type="button" id="asset-library-import-local" hidden>Import Local Backup</button>
+            </div>
+            <small>Use the same Worker URL and access key on each GM device. The access key is not saved in the browser.</small>
+          </div>
+          <button type="button" id="asset-library-save-selected" class="wide">Save Selected Object to Library</button>
+          <div class="asset-library-toolbar">
+            <input id="asset-library-search" type="search" placeholder="Search library…" aria-label="Search Asset Library">
+            <select id="asset-library-filter" aria-label="Filter Asset Library">
+              <option value="all">All items</option>
+              <option value="token">Tokens</option>
+              <option value="asset">Props &amp; Assets</option>
+            </select>
+          </div>
+          <div id="asset-library-count" class="asset-library-count" aria-live="polite">Loading library…</div>
+          <div class="asset-library-storage">
+            <div id="asset-library-storage-text" class="asset-library-storage-text" aria-live="polite">Calculating storage…</div>
+            <div id="asset-library-storage-meter" class="asset-library-storage-meter" role="progressbar" aria-label="Shared Asset Library storage out of the 5 GB limit" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="asset-library-storage-fill" class="asset-library-storage-fill"></span>
+            </div>
+            <small>Shared Cloudflare R2 storage. The VTT enforces a 5 GB total library limit.</small>
+          </div>
+          <div id="asset-library-list" class="asset-library-list">
+            <p class="note">Connect to the Cloud Asset Library to load shared items.</p>
+          </div>
+          <p id="asset-library-status" class="note" aria-live="polite">Initializing local library storage…</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="eyebrow">SCENE OBJECTS · GM</div>
+        <div class="scene-object-browser">
+          <input id="scene-object-search" type="search" placeholder="Search scene objects…" aria-label="Search scene objects">
+          <label class="scene-object-filter-label">Show
+            <select id="scene-object-filter" aria-label="Filter scene objects"><option value="all">All objects</option><option value="token">Tokens</option><option value="asset">Assets &amp; Props</option></select>
+          </label>
+          <div id="scene-object-count" class="scene-object-count" aria-live="polite">0 objects</div>
+          <div id="scene-object-list" class="scene-object-list"><p class="note">No objects in this scene.</p></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="eyebrow">OBJECT GROUPS · GM</div>
+        <div class="object-group-tools"><p class="note">Select objects on the battlefield, then create a named group. Ctrl+drag selects tokens; Shift+drag selects assets; Ctrl+Shift+drag selects both.</p><input id="object-group-name" type="text" maxlength="80" placeholder="New group name" aria-label="New object group name"><button type="button" id="object-group-create">Create Group from Selection</button><label>Existing group<select id="object-group-select"><option value="">Choose a group</option></select></label><p class="note" id="object-group-summary">Create a group from selected tokens and assets.</p><div class="editor-row"><button type="button" id="object-group-hide">Hide Group</button><button type="button" id="object-group-show">Show Group</button></div><button type="button" id="object-group-delete">Delete Group</button></div>
+      </section>
+
+      <section>
+        <div class="eyebrow">SCENE MANAGER</div>
+        <div class="token-editor">
+          <label>Active Scene<select id="scene-active-select" aria-label="Active scene"></select></label>
+          <div class="editor-row">
+            <button type="button" id="scene-new">New Scene</button>
+            <button type="button" id="scene-duplicate">Duplicate</button>
+          </div>
+          <div class="editor-row">
+            <button type="button" id="scene-rename">Rename</button>
+            <button type="button" id="scene-delete">Delete</button>
+          </div>
+          <div class="eyebrow">TRANSFER TOKEN</div>
+          <label>Token<select id="scene-transfer-token" aria-label="Token to transfer"></select></label>
+          <label>Destination Scene<select id="scene-transfer-destination" aria-label="Destination scene"></select></label>
+          <button type="button" id="scene-transfer" class="wide">Transfer Token to Scene</button>
+          <div class="eyebrow">SCENE COLLECTION BACKUP</div>
+          <div class="editor-row">
+            <button type="button" id="scene-export-collection">Export Collection</button>
+            <button type="button" id="scene-import-collection">Import Collection</button>
+          </div>
+          <input id="scene-collection-file" type="file" accept="application/json,.json" hidden>
+          <p class="note">Scenes and character records are stored on this device. Switching scenes saves the current battlefield automatically. Export the collection regularly as a backup.</p>
+        </div>
+        <div class="control-grid" style="margin-top:10px">
+          <button data-action="save-scene">Save Scene</button>
+          <button data-action="load-scene">Reload Scene</button>
+          <button data-action="export-scene">Export Scene JSON</button>
+          <button data-action="import-scene">Import Scene JSON</button>
+        </div>
+        <input id="scene-import-file" type="file" accept="application/json,.json" hidden>
+        <p class="note" id="scene-save-status" aria-live="polite">Initializing scene storage…</p>
+        <div class="storage-usage-panel" id="storage-usage-panel">
+          <div class="storage-usage-heading">
+            <div><strong>Storage &amp; Scene Usage</strong><small>Local data on this device</small></div>
+            <button type="button" id="storage-usage-refresh" aria-label="Refresh storage usage" title="Refresh">↻ Refresh</button>
+          </div>
+          <div class="storage-usage-stats">
+            <div><small>Saved scenes</small><strong id="storage-scene-count">—</strong><span id="storage-active-scene">Loading scene collection…</span></div>
+            <div><small>VTT data estimate</small><strong id="storage-vtt-total">—</strong><span>Saved scene and local library data</span></div>
+          </div>
+          <div class="storage-usage-breakdown">
+            <div><span>Scene collection</span><strong id="storage-scenes-bytes">—</strong></div>
+            <div><span>Battlefield map media</span><strong id="storage-maps-bytes">—</strong></div>
+            <div><span>Local Asset Library</span><strong id="storage-library-bytes">—</strong></div>
+            <div><span>Local browser settings</span><strong id="storage-local-bytes">—</strong></div>
+          </div>
+          <div class="storage-usage-meter-wrap">
+            <div class="storage-usage-meter-label"><span>Browser origin storage</span><strong id="storage-origin-summary">Checking browser estimate…</strong></div>
+            <div class="storage-usage-meter" id="storage-origin-meter" role="progressbar" aria-label="Browser origin storage usage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storage-origin-fill"></span></div>
+            <small id="storage-origin-detail">The browser reports an approximate usage and quota for this website.</small>
+          </div>
+          <p class="storage-usage-note" id="storage-usage-status" aria-live="polite">Calculating local storage usage…</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="eyebrow">TEST STATUS</div>
+        <ul class="checklist">
+          <li class="done">✓ Lightweight 3D scene</li>
+          <li class="done">✓ X / Y / Z token position</li>
+          <li class="done">✓ 5-ft altitude increments</li>
+          <li class="done">✓ Mobile touch camera</li>
+          <li class="done">✓ Circular camera-facing tokens</li>
+          <li class="done">✓ 5-ft grid movement snapping</li>
+          <li class="done">✓ Movement distance display</li>
+          <li class="done">✓ Paintable elevated terrain tiles</li>
+          <li>○ Multiplayer synchronization</li>
+          <li class="done">✓ Local scene save/load and JSON backup</li>
+          <li>○ Cloud storage and multiplayer synchronization</li>
+        </ul>
+      </section>
+
+      <p class="note">This prototype is intentionally graphics-light. Tokens are lightweight camera-facing circles and all rendering happens on the player's device.</p>
+      <section>
+        <div class="eyebrow">GM NOTES & PINS · GM</div>
+        <div class="token-editor gm-notes-tools">
+          <button type="button" data-action="gm-note-pin-toggle" aria-pressed="false">＋ Place GM Note Pin</button>
+          <p class="note">Place a small private pin at the center of a 5-ft grid cell. Hover to preview its note; click to open or collapse it. Only the GM can see or edit these pins.</p>
+          <div id="gm-note-status" class="note" aria-live="polite">No note pin selected.</div>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <footer>Wings of Atreia · VTT Prototype · No dedicated server required for this local proof-of-concept<br><strong>Clark Michael Zafra</strong></footer>
+  <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+  <script src="multiplayer/protocol.js?v=20261110-mainline-1"></script>
+  <script src="multiplayer/authority.js?v=20261110-mainline-1"></script>
+  <script src="multiplayer/lifecycle.js?v=20261110-mainline-1"></script>
+  <script src="multiplayer/vtt-adapter.js?v=20261110-mainline-1"></script>
+  <script src="app.js?v=20261108-mixed-group-movement-1"></script>
+  <script src="multi-scenes.js?v=20261108-storage-usage-1"></script>
+  <script src="storage-usage.js?v=20261108-storage-usage-1"></script>
+  <script src="asset-library.js?v=20261106-cloud-r2-1"></script>
+  <script src="overlay.js?v=20261107-horizontal-vertical-readout-1"></script>
+
+  <script id="woa-panel-organization">
+    (() => {
+      const panel = document.querySelector('aside.panel');
+      if (!panel || panel.dataset.organized === 'true') return;
+
+      const topSections = [...panel.querySelectorAll(':scope > section')];
+      const byHeading = new Map();
+      for (const section of topSections) {
+        const heading = section.querySelector(':scope > .eyebrow');
+        if (heading) byHeading.set(heading.textContent.trim().replace(/\s+/g, ' ').toUpperCase(), section);
+      }
+
+      const makeDetails = (title, className, open = false) => {
+        const details = document.createElement('details');
+        details.className = className;
+        details.dataset.panelTitle = title;
+        if (open) details.open = true;
+        const summary = document.createElement('summary');
+        summary.textContent = title;
+        details.append(summary);
+        return details;
+      };
+
+      const sectionFor = (heading) => byHeading.get(heading.toUpperCase());
+      const moveSectionInto = (section, parent, title) => {
+        if (!section) return;
+        const eyebrow = section.querySelector(':scope > .eyebrow');
+        if (eyebrow) eyebrow.remove();
+        const nested = makeDetails(title, 'panel-subgroup');
+        if (section.id) nested.id = section.id;
+        while (section.firstChild) nested.append(section.firstChild);
+        section.remove();
+        parent.append(nested);
+      };
+
+      const groups = [
+        { title: 'Access', headings: ['LOCAL PLAYER / GM PREVIEW'], open: true },
+        { title: 'Tokens & Standees', headings: ['STANDEES', 'TOKEN MANAGEMENT', 'PROPS & ASSETS · GM'], tokenManagement: true },
+        { title: 'Conditions', headings: ['CONDITIONS'] },
+        { title: 'Class Resource', headings: ['CLASS RESOURCE'] },
+        { title: 'Battlefield Editor', headings: ['GRID DISPLAY · GM', 'TERRAIN EDITOR · GM', 'BATTLEFIELD MAP · GM', 'WALL EDITOR · GM'] },
+        { title: 'GM Notes & Pins', headings: ['GM NOTES & PINS · GM'] },
+        { title: 'Scene Management', headings: ['SCENE MANAGER', 'TEST STATUS'] }
+      ];
+
+      for (const group of groups) {
+        const wrapper = makeDetails(group.title, 'panel-group', !!group.open);
+        if (group.tokenManagement) {
+          const tokenPanel = makeDetails('Token Management', 'panel-subgroup');
+          const standees = sectionFor('STANDEES');
+          const management = sectionFor('TOKEN MANAGEMENT');
+          const tabletop = sectionFor('TABLETOP');
+          for (const section of [standees, management]) {
+            if (!section) continue;
+            const eyebrow = section.querySelector(':scope > .eyebrow');
+            if (eyebrow) eyebrow.remove();
+            while (section.firstChild) tokenPanel.append(section.firstChild);
+            section.remove();
+          }
+
+          // Keep altitude adjustment controls directly inside the same Token Management frame.
+          if (tabletop) {
+            const eyebrow = tabletop.querySelector(':scope > .eyebrow');
+            if (eyebrow) eyebrow.remove();
+            while (tabletop.firstChild) tokenPanel.append(tabletop.firstChild);
+            tabletop.remove();
+          }
+          wrapper.append(tokenPanel);
+
+          // Keep Props & Assets and Object Groups inside Tokens & Standees.
+          moveSectionInto(sectionFor('PROPS & ASSETS · GM'), wrapper, 'Props & Assets');
+          moveSectionInto(sectionFor('ASSET LIBRARY · GM'), wrapper, 'Asset Library');
+          moveSectionInto(sectionFor('SCENE OBJECTS · GM'), wrapper, 'Scene Object List');
+          moveSectionInto(sectionFor('OBJECT GROUPS · GM'), wrapper, 'Object Groups');
+        } else {
+          for (const heading of group.headings) {
+            moveSectionInto(sectionFor(heading), wrapper, heading.replace(/\s*·\s*GM$/i, '').replace(/\s*\/\s*GM PREVIEW$/i, '').replace(/^LOCAL PLAYER$/i, 'Local Player'));
+          }
+        }
+        panel.append(wrapper);
+      }
+
+      // Keep Tactical Overlays in the same top-level panel sequence, between the editor and scene tools.
+      const tacticalOverlays = panel.querySelector(':scope > .tactical-overlay-panel');
+      const sceneManagement = [...panel.querySelectorAll(':scope > .panel-group')]
+        .find(group => group.dataset.panelTitle === 'Scene Management');
+      if (tacticalOverlays && sceneManagement) panel.insertBefore(tacticalOverlays, sceneManagement);
+
+      // Keep the informational note after the controls; its auto top margin otherwise pushes
+      // the entire organized sidebar downward and leaves a large blank area above it.
+      const sidebarNote = [...panel.querySelectorAll(':scope > .note')]
+        .find(note => note.textContent.includes('This prototype is intentionally graphics-light'));
+      if (sidebarNote) panel.append(sidebarNote);
+
+      panel.dataset.organized = 'true';
+    })();
+  </script>
+</body>
+</html>

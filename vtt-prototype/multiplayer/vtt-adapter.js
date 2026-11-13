@@ -113,8 +113,9 @@ function publishScene(message){
  if(Object.prototype.hasOwnProperty.call(message,'gmPing'))s.pendingGmPing=message.gmPing||null;
  const camera=message.data?.camera||message.camera,view2d=message.data?message.data.view2d===true:message.view2d===true;
  if(camera)s.pendingCameraState={camera,view2d};
- if(s.pendingCameraSync){for(const conn of s.approved.keys())sendCameraState(conn)}
- else{for(const conn of s.approved.keys())send(conn,'CAMERA_VIEW_UPDATE',{enabled:false})}
+ // Camera synchronization and GM pings are independent: when camera sync is
+ // disabled, still send the update packet so the player can display the ping.
+ for(const conn of s.approved.keys())sendCameraState(conn);
  if(!message.data){if(ui.syncStatus)ui.syncStatus.textContent='SYNC: No scene data was supplied for this update.';return}if(!s.approved.size){if(ui.syncStatus)ui.syncStatus.textContent='SYNC: No approved player connections are available.';return}
  const sceneRevision=Number.isSafeInteger(message.sceneRevision)?message.sceneRevision:null;
  if(message.forceScene===true){

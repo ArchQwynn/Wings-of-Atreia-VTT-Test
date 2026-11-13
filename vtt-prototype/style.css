@@ -911,3 +911,51 @@ footer { background: #0b1020; border-top-color: rgba(145, 207, 255, .14); }
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Smooth native disclosure animation for the VTT's collapsible control panels. */
+@supports selector(details::details-content) {
+  .panel-group,
+  .panel-subgroup {
+    interpolate-size: allow-keywords;
+  }
+  .panel-group::details-content,
+  .panel-subgroup::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition:
+      block-size .24s ease,
+      opacity .18s ease,
+      content-visibility .24s allow-discrete;
+  }
+  .panel-group[open]::details-content,
+  .panel-subgroup[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+.panel-group > summary,
+.panel-subgroup > summary {
+  position: relative;
+}
+.panel-group[open] > summary,
+.panel-subgroup[open] > summary {
+  color: #f3f7ff;
+}
+.panel-group[open] > summary::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(145,207,255,.3), transparent 75%);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-group::details-content,
+  .panel-subgroup::details-content {
+    transition: none !important;
+  }
+}

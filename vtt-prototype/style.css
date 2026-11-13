@@ -801,3 +801,113 @@ html body.player-join-gate {
 
 
 .bulk-visibility-panel{display:grid;gap:3px;padding:2px 0 4px}.bulk-visibility-panel .context-menu-heading{padding:5px 9px;color:var(--muted);font-size:.66rem;letter-spacing:.08em}
+
+
+/* Wings of Atreia interface polish — visual refinement only; no controls or layout are removed. */
+:root {
+  --accent: #91cfff;
+  --accent-soft: rgba(145, 207, 255, .13);
+  --gold: #c8a96b;
+  --gold-soft: rgba(200, 169, 107, .12);
+  --line: #2b3a50;
+  --panel: #111a2a;
+  --muted: #a5b2c6;
+}
+.topbar {
+  background: linear-gradient(110deg, #101a2b 0%, #0b1020 58%, #111827 100%);
+  border-bottom-color: rgba(145, 207, 255, .2);
+  box-shadow: 0 5px 22px rgba(0, 0, 0, .18);
+}
+.topbar h1 { text-shadow: 0 1px 16px rgba(145, 207, 255, .12); }
+.eyebrow { color: #aebbd0; }
+.panel {
+  background: linear-gradient(180deg, #131d2e 0%, #101827 100%);
+  scrollbar-color: #43536b #111a2a;
+  scrollbar-width: thin;
+}
+.panel-group, .panel-subgroup {
+  border-color: #2d3c52;
+  background: linear-gradient(145deg, rgba(17, 27, 43, .96), rgba(10, 17, 29, .96));
+  box-shadow: 0 5px 16px rgba(0, 0, 0, .12);
+  transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+.panel-group:hover, .panel-subgroup:hover { border-color: #465a75; }
+.panel-group > summary, .panel-subgroup > summary {
+  min-height: 44px;
+  background: linear-gradient(90deg, rgba(145, 207, 255, .055), rgba(255, 255, 255, .012));
+  transition: background .18s ease, color .18s ease;
+}
+.panel-group > summary:hover, .panel-subgroup > summary:hover {
+  background: linear-gradient(90deg, rgba(145, 207, 255, .13), rgba(255, 255, 255, .025));
+}
+.panel-group[open] > summary, .panel-subgroup[open] > summary {
+  border-bottom: 1px solid rgba(145, 207, 255, .1);
+}
+.panel-subgroup > summary { min-height: 39px; }
+button, input, select, textarea, .token, .room, .hud {
+  transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease, color .16s ease, transform .16s ease;
+}
+button {
+  border-color: #34445d;
+  background: linear-gradient(180deg, #1b2a40 0%, #152237 100%);
+}
+button:hover:not(:disabled) {
+  border-color: rgba(145, 207, 255, .72);
+  background: linear-gradient(180deg, #263b56 0%, #1a2c44 100%);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .18);
+}
+button:active:not(:disabled) { transform: translateY(1px) scale(.99); }
+button:disabled { cursor: not-allowed; }
+:where(button, input, select, textarea, summary, a):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+:where(input, select, textarea) {
+  border-color: #34445d;
+  background-color: #0d1727;
+}
+:where(input, select, textarea):hover:not(:disabled) { border-color: #536985; }
+:where(input, select, textarea):focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(145, 207, 255, .11);
+}
+.token {
+  background: rgba(17, 27, 43, .72);
+  transition: border-color .16s ease, background .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+.token:hover {
+  border-color: #607b9d;
+  background: rgba(31, 48, 71, .9);
+  transform: translateY(-1px);
+}
+.token.selected {
+  border-color: var(--accent);
+  background: linear-gradient(110deg, rgba(145, 207, 255, .14), rgba(17, 27, 43, .92));
+  box-shadow: inset 3px 0 0 var(--accent), 0 0 0 1px rgba(145, 207, 255, .08);
+}
+.room { background: rgba(8, 15, 27, .5); }
+.hud, .altitude {
+  border-color: rgba(145, 207, 255, .25);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, .2);
+  backdrop-filter: blur(9px);
+}
+.camera-pad button {
+  border-color: rgba(145, 207, 255, .55);
+  background: linear-gradient(180deg, rgba(27, 43, 65, .97), rgba(15, 25, 41, .97));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .24);
+}
+.camera-pad button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, #294361, #1b304b);
+}
+.camera-label { border: 1px solid rgba(145, 207, 255, .16); }
+footer { background: #0b1020; border-top-color: rgba(145, 207, 255, .14); }
+::selection { color: #07111d; background: rgba(145, 207, 255, .78); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

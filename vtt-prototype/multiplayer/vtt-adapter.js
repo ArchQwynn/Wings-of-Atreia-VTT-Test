@@ -58,7 +58,7 @@ function movementQueueRender(){
 function queueRender(){if(!ui.queue)return;ui.queue.replaceChildren();if(!s.pending.size){ui.queue.textContent='No pending join requests.';return}s.pending.forEach((entry,conn)=>{const row=document.createElement('div');row.className='multiplayer-request';const label=document.createElement('span');label.textContent=entry.name+' is requesting to join';const yes=document.createElement('button');yes.type='button';yes.textContent='Approve';yes.onclick=()=>approve(conn);const no=document.createElement('button');no.type='button';no.textContent='Reject';no.onclick=()=>reject(conn);row.append(label,yes,no);ui.queue.append(row)})}
 function connectedPlayersRender(){if(!ui.connected)return;ui.connected.replaceChildren();if(!s.approved.size){ui.connected.textContent='No players connected.';return}s.approved.forEach(entry=>{const row=document.createElement('div');row.className='multiplayer-request';const name=document.createElement('span');name.textContent=entry.name||'Unnamed player';const state=document.createElement('span');state.className='multiplayer-player-status';state.textContent='Connected';row.append(name,state);ui.connected.append(row)})}
 function snapshot(playerName=''){return root.WoAVTTMultiplayerHooks?.buildPlayerSnapshot?.(playerName)||null}
-function sendCameraState(conn){if(!s.pendingCameraState)return;send(conn,'CAMERA_VIEW_UPDATE',{enabled:s.pendingCameraSync,camera:s.pendingCameraState.camera,view2d:s.pendingCameraState.view2d===true})}
+function sendCameraState(conn){if(!s.pendingCameraState&&!s.pendingGmPing)return;send(conn,'CAMERA_VIEW_UPDATE',{enabled:s.pendingCameraSync,camera:s.pendingCameraState?.camera||null,view2d:s.pendingCameraState?.view2d===true,gmPing:s.pendingGmPing||null})}
 function splitUtf8Chunks(value,maxBytes=28*1024){
  const chunks=[];let part='',bytes=0;
  for(const character of value){
@@ -91,6 +91,7 @@ function sendSnapshot(conn,data=snapshot(s.approved.get(conn)?.name||''),cameraS
 function publishScene(message){
  if(s.role!=='host'||!message)return;
  if(typeof message.cameraSync==='boolean')s.pendingCameraSync=message.cameraSync;
+ if(Object.prototype.hasOwnProperty.call(message,'gmPing'))s.pendingGmPing=message.gmPing||null;
  const camera=message.data?.camera||message.camera,view2d=message.data?message.data.view2d===true:message.view2d===true;
  if(camera)s.pendingCameraState={camera,view2d};
  if(s.pendingCameraSync){for(const conn of s.approved.keys())sendCameraState(conn)}

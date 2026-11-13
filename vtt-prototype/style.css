@@ -959,3 +959,66 @@ footer { background: #0b1020; border-top-color: rgba(145, 207, 255, .14); }
     transition: none !important;
   }
 }
+
+
+/* Color-coded navigation markers for the main VTT sections. */
+.panel-group {
+  --section-accent: #91cfff;
+  border-left: 2px solid var(--section-accent);
+}
+.panel-group > summary {
+  padding-left: 11px;
+  box-shadow: inset 0 0 0 transparent;
+}
+.panel-group > summary::before {
+  color: var(--section-accent);
+}
+.panel-group > summary::after {
+  content: "";
+  position: static;
+  display: inline-grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  margin-left: auto;
+  border: 1px solid color-mix(in srgb, var(--section-accent) 35%, transparent);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--section-accent) 10%, transparent);
+  color: var(--section-accent);
+  font-size: .82rem;
+  line-height: 1;
+  pointer-events: none;
+}
+.panel-group[open] > summary {
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--section-accent) 28%, transparent);
+}
+.panel-group[open] > summary::after {
+  content: "";
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  height: 23px;
+  background: color-mix(in srgb, var(--section-accent) 14%, transparent);
+}
+.panel-group[data-panel-title="Remote Multiplayer"] { --section-accent: #75d6c4; }
+.panel-group[data-panel-title="Access"] { --section-accent: #91cfff; }
+.panel-group[data-panel-title="Tokens & Standees"] { --section-accent: #c8a96b; }
+.panel-group[data-panel-title="Conditions"] { --section-accent: #d99a8e; }
+.panel-group[data-panel-title="Class Resource"] { --section-accent: #b7a0e8; }
+.panel-group[data-panel-title="Battlefield Editor"] { --section-accent: #83c58d; }
+.panel-group[data-panel-title="GM Notes & Pins"] { --section-accent: #d7bd78; }
+.panel-group[data-panel-title="Scene Management"] { --section-accent: #91a9c9; }
+.panel-group[data-panel-title="Remote Multiplayer"] > summary::after { content: "↔"; }
+.panel-group[data-panel-title="Access"] > summary::after { content: "⌖"; }
+.panel-group[data-panel-title="Tokens & Standees"] > summary::after { content: "◈"; }
+.panel-group[data-panel-title="Conditions"] > summary::after { content: "◉"; }
+.panel-group[data-panel-title="Class Resource"] > summary::after { content: "◆"; }
+.panel-group[data-panel-title="Battlefield Editor"] > summary::after { content: "⬡"; }
+.panel-group[data-panel-title="GM Notes & Pins"] > summary::after { content: "✎"; }
+.panel-group[data-panel-title="Scene Management"] > summary::after { content: "▤"; }
+@media (max-width: 700px) {
+  .panel-group > summary { min-height: 46px; }
+  .panel-group > summary::after { width: 25px; height: 25px; flex-basis: 25px; }
+}

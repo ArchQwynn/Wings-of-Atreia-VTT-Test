@@ -24,17 +24,27 @@ function movementQueueRender(){
  s.movementRequests.forEach((request,requestId)=>{
   const row=document.createElement('div');row.className='multiplayer-request';
   const label=document.createElement('span');
-  label.textContent=request.playerName+' · '+(request.objectType==='asset'?'Asset: ':'Token: ')+(request.objectId||request.tokenId)+' · X '+request.proposed.x+', Y '+request.proposed.y+', Z '+request.proposed.z+' ft'+(request.approving?' · Approved — waiting for player synchronization':'');
+  label.textContent=request.playerName+' · '+(request.objectType==='asset'?'Asset: ':'Token: ')+(request.objectId||request.tokenId)+' · X '+request.proposed.x+', Y '+request.proposed.y+', Z '+request.proposed.z+' ft'+(request.approving?' · Approved — waiting for player synchronization':request.error?' · Approval issue: '+request.error:'');
   const yes=document.createElement('button');yes.type='button';yes.textContent=request.approving?'Syncing…':'Approve';yes.disabled=!!request.approving;
   yes.onclick=()=>{
    if(request.approving)return;
-   const result=root.WoAVTTMultiplayerHooks?.applyApprovedMovement?.(request);
+   request.error='';
+   let result;
+   try{
+    const apply=root.WoAVTTMultiplayerHooks?.applyApprovedMovement;
+    result=typeof apply==='function'?apply(request):{ok:false,message:'The tabletop movement handler is not ready. Reload the GM tabletop and reconnect the players.'};
+   }catch(error){
+    console.error('Approved movement failed:',error);
+    result={ok:false,message:'Movement approval encountered an error: '+(error?.message||String(error))};
+   }
    if(!result?.ok){
     const message=result?.message||'Movement could not be applied.';
-    root.WoAVTTMultiplayerHooks?.clearPendingMovement?.(requestId);
+    request.approving=false;request.error=message;
     send(request.connection,'ACTION_RESULT',{requestId,ok:false,message});
-    s.movementRequests.delete(requestId);movementQueueRender();status(message,'error');return
+    movementQueueRender();status('Movement was not applied. '+message,'error');return
    }
+   request.error='';
+
    s.revision++;let sent=0,requesterTransferStarted=false;
    for(const [conn,approved] of s.approved){
     const scene=snapshot(approved?.name||''),isRequester=conn===request.connection;

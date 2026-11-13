@@ -616,6 +616,7 @@
       };
 
       const groups = [
+        { title: 'Remote Multiplayer', headings: ['REMOTE MULTIPLAYER'], remoteMultiplayer: true },
         { title: 'Access', headings: ['LOCAL PLAYER / GM PREVIEW'], open: true },
         { title: 'Tokens & Standees', headings: ['STANDEES', 'TOKEN MANAGEMENT', 'PROPS & ASSETS · GM'], tokenManagement: true },
         { title: 'Conditions', headings: ['CONDITIONS'] },
@@ -627,7 +628,16 @@
 
       for (const group of groups) {
         const wrapper = makeDetails(group.title, 'panel-group', !!group.open);
-        if (group.tokenManagement) {
+        if (group.remoteMultiplayer) {
+          const section = sectionFor('REMOTE MULTIPLAYER');
+          if (section) {
+            if (section.id) wrapper.id = section.id;
+            const eyebrow = section.querySelector(':scope > .eyebrow');
+            if (eyebrow) eyebrow.remove();
+            while (section.firstChild) wrapper.append(section.firstChild);
+            section.remove();
+          }
+        } else if (group.tokenManagement) {
           const tokenPanel = makeDetails('Token Management', 'panel-subgroup');
           const standees = sectionFor('STANDEES');
           const management = sectionFor('TOKEN MANAGEMENT');

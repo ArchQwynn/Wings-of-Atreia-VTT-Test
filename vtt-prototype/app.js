@@ -737,8 +737,10 @@ function broadcastPlayerScene(forceScene=false){
   const cameraSync=document.getElementById('player-camera-sync')?.checked===true;
   const gmPing=state.gmPing&&Date.now()<state.gmPing.expiresAt?{x:state.gmPing.x,y:state.gmPing.y,startedAt:state.gmPing.startedAt,expiresAt:state.gmPing.expiresAt}:null;
   let message;
-  if(lastBroadcastSceneRevision!==playerSceneRevision){
-   const data=buildPlayerSceneSnapshot(sessionPlayerNameEl.value.trim());if(!data)return;
+  // A forced update (such as a completed GM token drag) must always carry
+  // a complete scene snapshot, even if an earlier save already broadcast this revision.
+  if(forceScene===true||lastBroadcastSceneRevision!==playerSceneRevision){
+   const data=buildPlayerSceneSnapshot(sessionPlayerNameEl.value.trim());if(!data)throw new Error('Could not build the player scene snapshot.');
    message={type:'scene',data,selectedTokenId:data.selected,gmPing,cameraSync,sceneRevision:playerSceneRevision,forceScene:forceScene===true};
    lastBroadcastSceneRevision=playerSceneRevision;
   }else{

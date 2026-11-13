@@ -1017,6 +1017,8 @@ canvas.addEventListener('pointerdown',e=>{
    updateClassResourcePanel(null);syncAssetEditor(copy);refreshAttachmentControls();
   }
   updateSceneObjectBrowser(true);saveSceneToBrowser();
+  // Newly placed objects must be sent as a complete player scene snapshot.
+  if(!playerScreenMode&&shouldBroadcastAsGM())broadcastPlayerScene(true);
   if(sceneSaveStatus)sceneSaveStatus.textContent='Placed "'+(pending.name||copy.name||'Library object')+'" in the scene.';
   const libraryStatus=document.getElementById('asset-library-status');if(libraryStatus)libraryStatus.textContent='Placed "'+(pending.name||copy.name||'Library object')+'".';
   render();return;

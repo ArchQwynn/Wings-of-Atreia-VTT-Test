@@ -1169,7 +1169,10 @@ function setSelectedObjectsVisibility(mode){
  state.selectedAsset=state.selectedAssetIds[0]||null;
  if(state.selectedAsset){const asset=state.assets.find(a=>a.id===state.selectedAsset);if(asset)syncAssetEditor(asset)}
  refreshAttachmentControls();updateSceneObjectBrowser(true);render();
- saveSceneToBrowser();broadcastPlayerScene();
+ saveSceneToBrowser();
+  // Visibility changes can reveal objects absent from the player's previous snapshot.
+  // Force a complete snapshot so newly visible objects are included immediately.
+  if(!playerScreenMode&&shouldBroadcastAsGM())broadcastPlayerScene(true);
  if(sceneSaveStatus)sceneSaveStatus.textContent=(gmOnly?'GM Only':'Visible to Players')+' applied to '+keys.length+' selected objects. Their other properties and attachments were preserved.';
 }
 function createObjectGroup(){if(!isGM())return;const input=document.getElementById('object-group-name'),name=input?.value.trim().slice(0,80),members=selectedObjectKeys();if(!name){sceneSaveStatus.textContent='Enter a group name.';return}if(!members.length){sceneSaveStatus.textContent='Select objects first. Ctrl+drag selects tokens, Shift+drag assets, Ctrl+Shift+drag both.';return}if(state.objectGroups.some(g=>g.name.toLowerCase()===name.toLowerCase())){sceneSaveStatus.textContent='A group with that name already exists.';return}recordUndo();const g={id:'group-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),name,members,hidden:false};state.objectGroups.push(g);input.value='';refreshObjectGroupControls();document.getElementById('object-group-select').value=g.id;refreshObjectGroupControls();saveSceneToBrowser();sceneSaveStatus.textContent='Created group "'+name+'" with '+members.length+' object(s).'}

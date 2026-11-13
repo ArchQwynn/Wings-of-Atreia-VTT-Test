@@ -1196,6 +1196,8 @@ async function readSceneMapImage(){
 }
 function saveSceneToBrowser(){
  playerSceneRevision++;
+ // Publish every saved GM scene change to PeerJS; do not depend only on canvas pointer events.
+ if(!playerScreenMode&&typeof shouldBroadcastAsGM==='function'&&shouldBroadcastAsGM())Promise.resolve().then(()=>{if(typeof broadcastPlayerScene==='function')broadcastPlayerScene()});
  const snapshot=sceneSnapshot(),mapImage=snapshot.map?.image||null;
  if(snapshot.map)snapshot.map.image='';
  sceneSaveQueue=sceneSaveQueue.then(async()=>{

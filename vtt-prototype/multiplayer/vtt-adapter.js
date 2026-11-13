@@ -2,8 +2,8 @@
 'use strict';
 const F=root.WoAMultiplayerFoundation,params=new URLSearchParams(location.search),playerMode=params.get('mode')==='player',sessionId=params.get('session');
 const $=id=>document.getElementById(id),s={peer:null,role:null,connection:null,connections:new Map(),pending:new Map(),approved:new Map(),generation:1,revision:0,sessionId:null,attemptId:null,transfer:null,lastPublishedSerialized:null,lastPublishedSceneRevision:null,pendingSceneRevision:null,pendingSceneData:null,pendingCameraSync:false,pendingCameraState:null,pendingGmPing:null,publishTimer:null,movementRequests:new Map(),snapshotTransfers:new Map(),reconnectTimer:null,reconnecting:false};
-const ui={status:$('multiplayer-status'),host:$('multiplayer-host'),join:$('multiplayer-join'),joinGate:$('player-join-gate'),hostButton:$('multiplayer-start-host'),joinButton:$('multiplayer-request-join'),name:$('multiplayer-display-name'),invite:$('multiplayer-invite'),copy:$('multiplayer-copy-invite'),queue:$('multiplayer-join-queue'),connected:$('multiplayer-connected-players'),moveQueue:$('multiplayer-movement-queue'),playerState:$('multiplayer-player-state'),end:$('multiplayer-end-session')};
-function status(t,k){if(ui.status){ui.status.textContent=t;ui.status.dataset.state=k||'info'}}
+const ui={status:$('multiplayer-status'),syncStatus:$('multiplayer-sync-status'),host:$('multiplayer-host'),join:$('multiplayer-join'),joinGate:$('player-join-gate'),hostButton:$('multiplayer-start-host'),joinButton:$('multiplayer-request-join'),name:$('multiplayer-display-name'),invite:$('multiplayer-invite'),copy:$('multiplayer-copy-invite'),queue:$('multiplayer-join-queue'),connected:$('multiplayer-connected-players'),moveQueue:$('multiplayer-movement-queue'),playerState:$('multiplayer-player-state'),end:$('multiplayer-end-session')};
+function status(t,k){if(ui.status){ui.status.textContent=t;ui.status.dataset.state=k||'info'}if(ui.syncStatus&&/SYNC|movement sent|synchronized|snapshot|scene/i.test(String(t)))ui.syncStatus.textContent='SYNC: '+t;}
 function id(){return root.crypto?.randomUUID?.()||'woa-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}
 function storageGet(key){try{return localStorage.getItem(key)}catch(_){return null}}
 function storageSet(key,value){try{localStorage.setItem(key,value)}catch(_){}}
@@ -108,14 +108,14 @@ function sendSnapshot(conn,data=snapshot(s.approved.get(conn)?.name||''),cameraS
  return true
 }
 function publishScene(message){
- if(s.role!=='host'||!message)return;
+ if(s.role!=='host'||!message){if(ui.syncStatus)ui.syncStatus.textContent='SYNC: GM host is not active; scene update was not sent.';return;}
  if(typeof message.cameraSync==='boolean')s.pendingCameraSync=message.cameraSync;
  if(Object.prototype.hasOwnProperty.call(message,'gmPing'))s.pendingGmPing=message.gmPing||null;
  const camera=message.data?.camera||message.camera,view2d=message.data?message.data.view2d===true:message.view2d===true;
  if(camera)s.pendingCameraState={camera,view2d};
  if(s.pendingCameraSync){for(const conn of s.approved.keys())sendCameraState(conn)}
  else{for(const conn of s.approved.keys())send(conn,'CAMERA_VIEW_UPDATE',{enabled:false})}
- if(!message.data||!s.approved.size)return;
+ if(!message.data){if(ui.syncStatus)ui.syncStatus.textContent='SYNC: No scene data was supplied for this update.';return}if(!s.approved.size){if(ui.syncStatus)ui.syncStatus.textContent='SYNC: No approved player connections are available.';return}
  const sceneRevision=Number.isSafeInteger(message.sceneRevision)?message.sceneRevision:null;
  if(message.forceScene===true){
   if(s.publishTimer){clearTimeout(s.publishTimer);s.publishTimer=null}
@@ -127,7 +127,7 @@ function publishScene(message){
    sendCameraState(conn)
   }
   if(sent&&sceneRevision!==null)s.lastPublishedSceneRevision=sceneRevision;
-  status(sent?'GM movement sent to '+sent+' connected player screen(s).':'SYNC ERROR: GM movement could not be sent to any connected player. ',sent?'good':'error');
+  status(sent?'GM movement sent to '+sent+' connected player screen(s).':'SYNC ERROR: GM movement could not be sent to any connected player. ',sent?'good':'error');if(ui.syncStatus)ui.syncStatus.textContent=sent?'SYNC: GM scene snapshot sent to '+sent+' player screen(s); waiting for confirmation.':'SYNC ERROR: Could not send the GM scene snapshot to any player.';
   return
  }
  if(sceneRevision!==null&&sceneRevision===s.lastPublishedSceneRevision)return;
@@ -141,7 +141,7 @@ function publishScene(message){
   s.revision++;let sent=0;
   for(const [conn,approved] of s.approved){const name=approved?.name||'';if(sendSnapshot(conn,snapshot(name),s.pendingCameraSync))sent++;sendCameraState(conn)}
   if(sent&&revision!==null)s.lastPublishedSceneRevision=revision;
-  if(!sent)status('SYNC ERROR: no player scene snapshots could be sent · revision '+s.revision+'.','error')
+  if(!sent){status('SYNC ERROR: no player scene snapshots could be sent · revision '+s.revision+'.','error');if(ui.syncStatus)ui.syncStatus.textContent='SYNC ERROR: No player scene snapshots could be sent.'}else if(ui.syncStatus)ui.syncStatus.textContent='SYNC: Scene snapshot sent to '+sent+' player screen(s); awaiting confirmation.'
  },180)
 }
 function sendInitialScene(conn,name){s.revision++;const initial=snapshot(name);if(initial){s.pendingCameraState={camera:initial.camera,view2d:initial.view2d===true};s.pendingCameraSync=$('player-camera-sync')?.checked===true}if(sendSnapshot(conn,initial,s.pendingCameraSync)){const sceneRevision=root.WoAVTTMultiplayerHooks?.getSceneRevision?.();if(Number.isSafeInteger(sceneRevision))s.lastPublishedSceneRevision=sceneRevision}sendCameraState(conn)}

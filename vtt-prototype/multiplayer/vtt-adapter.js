@@ -13,7 +13,7 @@ function movementQueueRender(){if(!ui.moveQueue)return;ui.moveQueue.replaceChild
 function queueRender(){if(!ui.queue)return;ui.queue.replaceChildren();if(!s.pending.size){ui.queue.textContent='No pending join requests.';return}s.pending.forEach((entry,conn)=>{const row=document.createElement('div');row.className='multiplayer-request';const label=document.createElement('span');label.textContent=entry.name+' is requesting to join';const yes=document.createElement('button');yes.type='button';yes.textContent='Approve';yes.onclick=()=>approve(conn);const no=document.createElement('button');no.type='button';no.textContent='Reject';no.onclick=()=>reject(conn);row.append(label,yes,no);ui.queue.append(row)})}
 function snapshot(playerName=''){return root.WoAVTTMultiplayerHooks?.buildPlayerSnapshot?.(playerName)||null}
 function sendCameraState(conn){if(!s.pendingCameraState)return;send(conn,'CAMERA_VIEW_UPDATE',{enabled:s.pendingCameraSync,camera:s.pendingCameraState.camera,view2d:s.pendingCameraState.view2d===true})}
-function splitUtf8Chunks(value,maxBytes=48*1024){
+function splitUtf8Chunks(value,maxBytes=28*1024){
  const chunks=[];let part='',bytes=0;
  for(const character of value){
   const size=typeof TextEncoder!=='undefined'?new TextEncoder().encode(character).length:unescape(encodeURIComponent(character)).length;

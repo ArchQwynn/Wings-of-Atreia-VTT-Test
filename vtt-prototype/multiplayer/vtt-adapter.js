@@ -97,6 +97,19 @@ function publishScene(message){
  else{for(const conn of s.approved.keys())send(conn,'CAMERA_VIEW_UPDATE',{enabled:false})}
  if(!message.data||!s.approved.size)return;
  const sceneRevision=Number.isSafeInteger(message.sceneRevision)?message.sceneRevision:null;
+ if(message.forceScene===true){
+  if(s.publishTimer){clearTimeout(s.publishTimer);s.publishTimer=null}
+  s.pendingSceneData=null;s.pendingSceneRevision=null;
+  s.revision++;let sent=0;
+  for(const [conn,approved] of s.approved){
+   const name=approved?.name||'',data=snapshot(name);
+   if(data&&sendSnapshot(conn,data,s.pendingCameraSync))sent++;
+   sendCameraState(conn)
+  }
+  if(sent&&sceneRevision!==null)s.lastPublishedSceneRevision=sceneRevision;
+  status(sent?'GM movement sent to '+sent+' connected player screen(s).':'SYNC ERROR: GM movement could not be sent to any connected player. ',sent?'good':'error');
+  return
+ }
  if(sceneRevision!==null&&sceneRevision===s.lastPublishedSceneRevision)return;
  s.pendingSceneData=message.data;s.pendingSceneRevision=sceneRevision;
  if(s.publishTimer)return;
